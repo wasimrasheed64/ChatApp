@@ -61,21 +61,7 @@
             <div class="layout-page">
             <!-- Content -->
             <div class="app-chat card">
-                <div class="row g-0">
-                    <!-- Chat & Contacts -->
-                    <div
-                        class="col app-chat-contacts app-sidebar flex-grow-0 overflow-hidden border-end"
-                        id="app-chat-contacts">
-                       <livewire:chat.sidebar />
-                    </div>
-                    <!-- /Chat contacts -->
-                    <!-- Chat History -->
-                    <div class="col app-chat-history">
-                        <livewire:chat.history></livewire:chat.history>
-                    </div>
-                    <!-- /Chat History -->
-                    <div class="app-overlay"></div>
-                </div>
+               {{ $slot }}
             </div>
             </div>
 

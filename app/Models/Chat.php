@@ -14,5 +14,20 @@ class Chat extends Model
         'name',
     ];
 
+    public function chatUsers()
+    {
+        return $this->hasMany(ChatUser::class , 'chat_id');
+    }
+
+    public function users(){
+        return $this->belongsToMany(User::class, 'chat_users', 'chat_id', 'user_id');
+    }
+
+
+    public function scopeGetChat($query,$userId,$currentUser){
+        return $query->whereHas('chatUsers', function ($query) use ($userId, $currentUser) {
+            $query->whereIn('user_id', [$userId, $currentUser])->groupBy('chat_id');;
+        });
+    }
 
 }

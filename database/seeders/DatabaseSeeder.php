@@ -14,11 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//        ]);
         User::factory()->create([
             'email' => 'admin@haier.com',
             'password' => bcrypt('123456'),
@@ -31,5 +26,11 @@ class DatabaseSeeder extends Seeder
             'bio' => 'Ai Bot',
             'avatar' =>'https://cleaningservicevegas.com/storage/images/profile/BHqf0c5xZQ6YrT9u94iBrLyQAnRbvLJsAMuBG06T.jpg'
         ]);
+
+        User::factory(10)->create([
+            'bio' => 'Full Stack Engineer',
+            'avatar' => 'https://cleaningservicevegas.com/storage/images/profile/BHqf0c5xZQ6YrT9u94iBrLyQAnRbvLJsAMuBG06T.jpg',
+        ]);
+
     }
 }

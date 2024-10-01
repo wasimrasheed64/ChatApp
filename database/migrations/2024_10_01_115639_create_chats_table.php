@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->index();
+            $table->uuid('uuid')->default(\Illuminate\Support\Str::uuid());
             $table->string('name');
             $table->timestamps();
         });

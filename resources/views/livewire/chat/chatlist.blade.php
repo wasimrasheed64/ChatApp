@@ -1,9 +1,47 @@
 <?php
 
-use function Livewire\Volt\{state};
+use App\Models\Chat;
+use App\Models\User;
+use Livewire\Volt\Component;
+use Livewire\Attributes\On;
 
-//
+new class extends Component {
+    public $chats;
+    public $selectedChat;
 
+    public function mount()
+    {
+        $authUser = auth()->user();
+        $chatIds = $authUser->chats->pluck('id');
+        $this->chats = Chat::whereHas('chatUsers', function ($query) use ($chatIds, $authUser) {
+            $query->whereIn('chat_id', $chatIds)->where('user_id', '!=', $authUser->id);
+        })
+            ->with(['users' => function ($q) use ($authUser) {
+                $q->where('users.id','!=', $authUser->id);
+            }])
+            ->get();
+    }
+
+    public function chatSelected($chatId){
+        $this->selectedChat = $chatId;
+    }
+
+    #[On('contact-selected')]
+    public function chatListUpdated(){
+        $authUser = auth()->user();
+        $chatIds = $authUser->chats->pluck('id');
+        $this->dispatch('chat-list-updated');
+        $this->chats = Chat::whereHas('chatUsers', function ($query) use ($chatIds, $authUser) {
+            $query->whereIn('chat_id', $chatIds)->where('user_id', '!=', $authUser->id);
+        })
+            ->with(['users' => function ($q) use ($authUser) {
+                $q->where('users.id','!=', $authUser->id);
+            }])
+            ->get();
+
+    }
+
+};
 ?>
 
 <div>
@@ -13,55 +51,31 @@ use function Livewire\Volt\{state};
             <li class="chat-contact-list-item chat-contact-list-item-title mt-0">
                 <h5 class="text-primary mb-0">Chats</h5>
             </li>
-            <li class="chat-contact-list-item chat-list-item-0 d-none">
-                <h6 class="text-muted mb-0">No Chats Found</h6>
-            </li>
-            <li class="chat-contact-list-item mb-1">
-                <a class="d-flex align-items-center">
-                    <div class="flex-shrink-0 avatar avatar-online">
-                        <img src="../../assets/img/avatars/13.png" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <div class="chat-contact-info flex-grow-1 ms-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="chat-contact-name text-truncate m-0 fw-normal">Waldemar Mannering</h6>
-                            <small class="text-muted">5 Minutes</small>
+            @forelse ($chats as $chat)
+                <li wire:click="chatSelected({{ $chat->users->first()->id }})"  class="chat-contact-list-item mb-1 {{ $this->selectedChat == $chat->users->first()->id ? 'active' : '' }}">
+                    <a class="d-flex align-items-center">
+                        <div class="flex-shrink-0 avatar {{ $chat->status ? 'avatar-online' : 'avatar-offline' }}">
+                            <img src="{{ $chat->users->first()->avatar ?? 'default-avatar.png' }}" alt="Avatar" class="rounded-circle"/>
                         </div>
-                        <small class="chat-contact-status text-truncate">Refer friends. Get rewards.</small>
-                    </div>
-                </a>
-            </li>
-            <li class="chat-contact-list-item active mb-1">
-                <a class="d-flex align-items-center">
-                    <div class="flex-shrink-0 avatar avatar-offline">
-                        <img src="../../assets/img/avatars/4.png" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <div class="chat-contact-info flex-grow-1 ms-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="chat-contact-name text-truncate fw-normal m-0">Felecia Rower</h6>
-                            <small class="text-muted">30 Minutes</small>
+                        <div class="chat-contact-info flex-grow-1 ms-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="chat-contact-name text-truncate m-0 fw-normal">{{ $chat->users->first()->name }}</h6>
+                                <small class="text-muted">{{ $chat->users->first()->last_active }}</small>
+                            </div>
+                            {{-- Uncomment below if you want to show the last message text --}}
+                            {{-- <small class="chat-contact-status text-truncate">{{ $chat->last_message_text }}</small> --}}
                         </div>
-                        <small class="chat-contact-status text-truncate">I will purchase it for sure. 👍</small>
-                    </div>
-                </a>
-            </li>
-            <li class="chat-contact-list-item mb-0">
-                <a class="d-flex align-items-center">
-                    <div class="flex-shrink-0 avatar avatar-busy">
-                        <span class="avatar-initial rounded-circle bg-label-success">CM</span>
-                    </div>
-                    <div class="chat-contact-info flex-grow-1 ms-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="chat-contact-name text-truncate fw-normal m-0">Calvin Moore</h6>
-                            <small class="text-muted">1 Day</small>
-                        </div>
-                        <small class="chat-contact-status text-truncate"
-                        >If it takes long you can mail inbox user</small
-                        >
-                    </div>
-                </a>
-            </li>
+                    </a>
+                </li>
+            @empty
+                <li class="chat-contact-list-item chat-list-item-0">
+                    <h6 class="text-muted mb-0">No Chats Found</h6>
+                </li>
+            @endforelse
+
+
         </ul>
         <!-- Contacts -->
-       <livewire:chat.contacts></livewire:chat.contacts>
+        <livewire:chat.contacts></livewire:chat.contacts>
     </div>
 </div>

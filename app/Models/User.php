@@ -48,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function chats(){
+        return $this->belongsToMany(Chat::class, 'chat_users',  'user_id','chat_id');
+    }
+
+    public function chatUsers(){
+        return $this->hasMany(ChatUser::class, 'user_id');
+    }
+
+    /*
+     * In this function we load all the contact
+     * with which the current user doesn't have a
+     * chat
+     */
+    public function scopeUserContacts($query,$userId) {
+        $chatUsersId = ChatUser::where('user_id',$userId)->get('user_id')->pluck('user_id');
+        $chatUsersId->push($userId);
+        $query->whereNotIn('id', $chatUsersId);
+    }
+
 }

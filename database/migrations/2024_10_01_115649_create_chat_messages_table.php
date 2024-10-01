@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('message');
             $table->boolean('read')->default(false);
+            $table->boolean('delivered')->default(false);
             $table->timestamps();
         });
     }
