@@ -12,6 +12,7 @@ class ChatMessage extends Model
         'chat_id',
         'message',
         'user_id',
-        'read'
+        'read',
+        'deliver'
     ];
 }

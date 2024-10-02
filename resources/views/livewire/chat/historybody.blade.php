@@ -1,9 +1,16 @@
 <?php
+use Livewire\Volt\Component;
+use Livewire\Attributes\Reactive;
+new class extends Component {
+    #[Reactive]
+    public $chatMessages = [];
 
-use function Livewire\Volt\{state};
+    public function mount($chatMessages){
+        $this->chatMessages = $chatMessages;
+    }
 
-//
 
+}
 ?>
 
 <div>

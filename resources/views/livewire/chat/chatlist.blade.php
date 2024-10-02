@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Chat;
-use App\Models\User;
 use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 
@@ -11,36 +10,35 @@ new class extends Component {
 
     public function mount()
     {
+        $this->loadChats();
+    }
+
+    public function loadChats()
+    {
         $authUser = auth()->user();
         $chatIds = $authUser->chats->pluck('id');
+
         $this->chats = Chat::whereHas('chatUsers', function ($query) use ($chatIds, $authUser) {
             $query->whereIn('chat_id', $chatIds)->where('user_id', '!=', $authUser->id);
         })
             ->with(['users' => function ($q) use ($authUser) {
-                $q->where('users.id','!=', $authUser->id);
+                $q->where('users.id', '!=', $authUser->id);
             }])
             ->get();
     }
 
-    public function chatSelected($chatId){
+    public function chatSelected($chatId)
+    {
         $this->selectedChat = $chatId;
+        $this->dispatch('chat-selected', $chatId);
     }
 
     #[On('contact-selected')]
-    public function chatListUpdated(){
-        $authUser = auth()->user();
-        $chatIds = $authUser->chats->pluck('id');
+    public function chatListUpdated()
+    {
+        $this->loadChats();
         $this->dispatch('chat-list-updated');
-        $this->chats = Chat::whereHas('chatUsers', function ($query) use ($chatIds, $authUser) {
-            $query->whereIn('chat_id', $chatIds)->where('user_id', '!=', $authUser->id);
-        })
-            ->with(['users' => function ($q) use ($authUser) {
-                $q->where('users.id','!=', $authUser->id);
-            }])
-            ->get();
-
     }
-
 };
 ?>
 
@@ -52,7 +50,7 @@ new class extends Component {
                 <h5 class="text-primary mb-0">Chats</h5>
             </li>
             @forelse ($chats as $chat)
-                <li wire:click="chatSelected({{ $chat->users->first()->id }})"  class="chat-contact-list-item mb-1 {{ $this->selectedChat == $chat->users->first()->id ? 'active' : '' }}">
+                <li wire:click="chatSelected({{ $chat->id }})"  class="chat-contact-list-item mb-1 {{ $this->selectedChat == $chat->id ? 'active' : '' }}">
                     <a class="d-flex align-items-center">
                         <div class="flex-shrink-0 avatar {{ $chat->status ? 'avatar-online' : 'avatar-offline' }}">
                             <img src="{{ $chat->users->first()->avatar ?? 'default-avatar.png' }}" alt="Avatar" class="rounded-circle"/>

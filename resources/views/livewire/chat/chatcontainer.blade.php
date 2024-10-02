@@ -7,27 +7,24 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 
 new class extends Component {
-    public $selectedChat;
 
     #[On('contact-selected')]
-    public function updateSelectedUser($selectedUser): void
+    public function updateSelectedContact($selectedContact): void
     {
         $authUser = Auth::user();
         $chat = \App\Models\Chat::select('chats.*')
             ->join('chat_users', 'chats.id', '=', 'chat_users.chat_id')
             ->join('users', 'chat_users.user_id', '=', 'users.id')
-            ->whereIn('users.id', [$authUser->id, $selectedUser]) // Check if both users are in the chat
+            ->whereIn('users.id', [$authUser->id, $selectedContact]) // Check if both users are in the chat
             ->groupBy('chats.id') // Group by chat ID
             ->havingRaw('COUNT(users.id) = 2') // Ensure both users are present
             ->first();
         if (!$chat) {
-            $chat = Chat::create(['name' => 'user_chat' . $selectedUser . '-' . $authUser->id]);
-            $chat->users()->sync([$selectedUser,$authUser->id]);
+            $chat = Chat::create(['name' => 'user_chat' . $selectedContact . '-' . $authUser->id]);
+            $chat->users()->sync([$selectedContact,$authUser->id]);
             $this->dispatch('chat-updated');
         }
-
     }
-
 
 };
 ?>
@@ -38,7 +35,7 @@ new class extends Component {
             class="col app-chat-contacts app-sidebar flex-grow-0 overflow-hidden border-end"
             id="app-chat-contacts">
             <livewire:chat.topbar></livewire:chat.topbar>
-            <livewire:chat.chatlist :selectedChat="$selectedChat"></livewire:chat.chatlist>
+            <livewire:chat.chatlist></livewire:chat.chatlist>
         </div>
         <!-- /Chat contacts -->
         <!-- Chat History -->
