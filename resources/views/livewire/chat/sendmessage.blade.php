@@ -25,7 +25,7 @@ new class extends Component {
             'chat_id' => $this->chatId,
             'message' => $this->newMessage
         ]);
-//        MessageSent::dispatch('user', $this->newMessage);
+        MessageSent::dispatch($user ,$this->newMessage,$this->chatId);
         $this->reset('newMessage');
     }
 

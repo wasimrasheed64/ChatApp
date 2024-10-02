@@ -29,7 +29,13 @@ new class extends Component {
 
     public function getChatMessages($chatId): void
     {
-        $this->chatMessages = ChatMessage::where('chat_id',$chatId)->get();
+        $this->chatMessages = ChatMessage::with('user')->where('chat_id',$chatId)->get();
+    }
+
+    #[On('echo:messages,MessageSent')]
+    public function onMessageSent($event): void
+    {
+        dd($event);
     }
 }
 ?>
