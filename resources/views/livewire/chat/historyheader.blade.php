@@ -1,11 +1,30 @@
 <?php
+
+use App\Models\ChatUser;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Volt\Component;
-use Livewire\Attributes\Reactive;
+use Livewire\Attributes\On;
+
 new class extends Component {
-    #[Reactive]
     public $chatUser;
-    public function mount($chatUser){
-        $this->chatUser = $chatUser;
+
+    #[On('chat-id-updated')]
+    public function chatListUpdated($chatId): void
+    {
+        \Illuminate\Support\Facades\Log::info('======ChatIdUpdatedHeader=========');
+        \Illuminate\Support\Facades\Log::info($chatId);
+        \Illuminate\Support\Facades\Log::info(Auth::user()->id);
+        \Illuminate\Support\Facades\Log::info('===============');
+        $this->getChatUser($chatId);
+    }
+
+    public function getChatUser($chatId): void
+    {
+        $authUserId = auth()->user()->id;
+        $this->chatUser = ChatUser::where('chat_id', $chatId)
+            ->where('user_id', '!=', $authUserId)
+            ->with('user')
+            ->first();
     }
 
 }
@@ -15,27 +34,27 @@ new class extends Component {
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex overflow-hidden align-items-center">
                 @if($chatUser)
-                <i
-                    class="ti ti-menu-2 ti-lg cursor-pointer d-lg-none d-block me-4"
-                    data-bs-toggle="sidebar"
-                    data-overlay
-                    data-target="#app-chat-contacts"></i>
-                <div class="flex-shrink-0 avatar avatar-online">
-                    <img
-                        src="{{ $chatUser->user->avatar }}"
-                        alt="Avatar"
-                        class="rounded-circle"
+                    <i
+                        class="ti ti-menu-2 ti-lg cursor-pointer d-lg-none d-block me-4"
                         data-bs-toggle="sidebar"
                         data-overlay
-                        data-target="#app-chat-sidebar-right" />
-                </div>
-                <div class="chat-contact-info flex-grow-1 ms-4">
-                    <h6 class="m-0 fw-normal">
+                        data-target="#app-chat-contacts"></i>
+                    <div class="flex-shrink-0 avatar avatar-online">
+                        <img
+                            src="{{ $chatUser->user->avatar }}"
+                            alt="Avatar"
+                            class="rounded-circle"
+                            data-bs-toggle="sidebar"
+                            data-overlay
+                            data-target="#app-chat-sidebar-right"/>
+                    </div>
+                    <div class="chat-contact-info flex-grow-1 ms-4">
+                        <h6 class="m-0 fw-normal">
 
-                        {{ $chatUser->user->name }}</h6>
-                    <small class="user-status text-body">{{ $chatUser->user->bio }}</small>
-                </div>
-                    @endif
+                            {{ $chatUser->user->name }}</h6>
+                        <small class="user-status text-body">{{ $chatUser->user->bio }}</small>
+                    </div>
+                @endif
             </div>
             <div class="d-flex align-items-center">
                 <i

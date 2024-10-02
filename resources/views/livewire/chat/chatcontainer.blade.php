@@ -2,11 +2,11 @@
 
 use App\Models\Chat;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 
 new class extends Component {
+    public $chatSelected;
 
     #[On('contact-selected')]
     public function updateSelectedContact($selectedContact): void
@@ -26,6 +26,12 @@ new class extends Component {
         }
     }
 
+    #[On('chat-id-updated')]
+    public function chatListUpdated($chatId): void
+    {
+        $this->chatSelected = $chatId;
+        $this->dispatch('get-chat-user',$chatId);
+    }
 };
 ?>
 <div>
@@ -39,7 +45,7 @@ new class extends Component {
         </div>
         <!-- /Chat contacts -->
         <!-- Chat History -->
-        <div class="col app-chat-history">
+        <div class="col app-chat-history" >
             <livewire:chat.history></livewire:chat.history>
         </div>
         <!-- /Chat History -->

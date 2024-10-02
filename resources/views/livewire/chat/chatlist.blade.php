@@ -6,7 +6,7 @@ use Livewire\Attributes\On;
 
 new class extends Component {
     public $chats;
-    public $selectedChat;
+    public $selectedChatInChatList;
 
     public function mount()
     {
@@ -16,21 +16,16 @@ new class extends Component {
     public function loadChats()
     {
         $authUser = auth()->user();
-        $chatIds = $authUser->chats->pluck('id');
-
-        $this->chats = Chat::whereHas('chatUsers', function ($query) use ($chatIds, $authUser) {
-            $query->whereIn('chat_id', $chatIds)->where('user_id', '!=', $authUser->id);
-        })
-            ->with(['users' => function ($q) use ($authUser) {
+        $this->chats = Chat::with(['users' => function ($q) use ($authUser) {
                 $q->where('users.id', '!=', $authUser->id);
-            }])
-            ->get();
+            }])->get();
     }
 
-    public function chatSelected($chatId)
+    public function chatSelected($selectedChatInChatList)
     {
-        $this->selectedChat = $chatId;
-        $this->dispatch('chat-selected', $chatId);
+        $this->dispatch('chat-id-updated', $selectedChatInChatList);
+        $this->dispatch('get-chat-messages',$selectedChatInChatList);
+        $this->selectedChatInChatList = $selectedChatInChatList;
     }
 
     #[On('contact-selected')]
@@ -50,7 +45,7 @@ new class extends Component {
                 <h5 class="text-primary mb-0">Chats</h5>
             </li>
             @forelse ($chats as $chat)
-                <li wire:click="chatSelected({{ $chat->id }})"  class="chat-contact-list-item mb-1 {{ $this->selectedChat == $chat->id ? 'active' : '' }}">
+                <li wire:click="chatSelected({{ $chat->id }})"  class="chat-contact-list-item mb-1 {{ $this->selectedChatInChatList == $chat->id ? 'active' : '' }}">
                     <a class="d-flex align-items-center">
                         <div class="flex-shrink-0 avatar {{ $chat->status ? 'avatar-online' : 'avatar-offline' }}">
                             <img src="{{ $chat->users->first()->avatar ?? 'default-avatar.png' }}" alt="Avatar" class="rounded-circle"/>

@@ -1,12 +1,35 @@
 <?php
-use Livewire\Volt\Component;
-use Livewire\Attributes\Reactive;
-new class extends Component {
-    #[Reactive]
-    public $chatMessages = [];
 
-    public function mount($chatMessages){
-        $this->chatMessages = $chatMessages;
+use App\Models\ChatMessage;
+use Livewire\Volt\Component;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
+
+new class extends Component {
+    public $chatMessages = [];
+    public $chatSelected;
+
+    #[On('get-chat-messages')]
+    public function chatListUpdated($chatId): void
+    {
+        $this->chatSelected = $chatId;
+        $this->getChatMessages($chatId);
+    }
+
+    public function getChatMessages($chatId): void
+    {
+        $this->chatMessages = ChatMessage::with('user')
+            ->where('chat_id', $chatId)
+            ->orderBy('created_at', 'desc')
+            ->take(40)
+            ->get()
+            ->sortBy('created_at');;
+    }
+
+    #[On('echo-private:messages.{chatSelected},MessageSent')]
+    public function onMessageSent($event): void
+    {
+        $this->getChatMessages($event['chatId']);
     }
 }
 ?>
@@ -15,26 +38,26 @@ new class extends Component {
     <div class="chat-history-body">
         <ul class="list-unstyled chat-history">
             @if($chatMessages)
-            @foreach($chatMessages as $chatMessage)
-            <li class="chat-message {{ $chatMessage->user->id === auth()->user()->id ? 'chat-message-right' : '' }}">
-                <div class="d-flex overflow-hidden">
-                    <div class="chat-message-wrapper flex-grow-1">
-                        <div class="chat-message-text">
-                            <p class="mb-0">
-                                {{ $chatMessage->message }}
-                            </p>
+                @foreach($chatMessages as $chatMessage)
+                    <li class="chat-message {{ $chatMessage->user->id === auth()->user()->id ? 'chat-message-right' : '' }}">
+                        <div class="d-flex overflow-hidden">
+                            <div class="chat-message-wrapper flex-grow-1">
+                                <div class="chat-message-text">
+                                    <p class="mb-0">
+                                        {{ $chatMessage->message }}
+                                    </p>
+                                </div>
+                                <div class="text-end text-muted mt-1">
+                                    <small>{{ $chatMessage->created_at }}</small>
+                                </div>
+                            </div>
+                            <div class="user-avatar flex-shrink-0 ms-4">
+                                <div class="avatar avatar-sm">
+                                    <img src="{{ $chatMessage->user->avatar }}" alt="Avatar" class="rounded-circle"/>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-end text-muted mt-1">
-                            <small>{{ $chatMessage->created_at }}</small>
-                        </div>
-                    </div>
-                    <div class="user-avatar flex-shrink-0 ms-4">
-                        <div class="avatar avatar-sm">
-                            <img src="{{ $chatMessage->user->avatar }}" alt="Avatar" class="rounded-circle" />
-                        </div>
-                    </div>
-                </div>
-            </li>
+                    </li>
                 @endforeach
             @else
                 <li class="chat-message"> No Chat Selected</li>
