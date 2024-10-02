@@ -11,14 +11,14 @@ new class extends Component {
     public $chatMessages;
 
     #[On('chat-selected')]
-    public function chatListUpdated($chatId)
+    public function chatListUpdated($chatId): void
     {
         $this->chatSelected = $chatId;
         $this->getChatUser($chatId);
         $this->getChatMessages($chatId);
     }
 
-    public function getChatUser($chatId)
+    public function getChatUser($chatId): void
     {
         $authUserId = auth()->user()->id;
         $this->chatUser = ChatUser::where('chat_id',$chatId)
@@ -27,7 +27,7 @@ new class extends Component {
             ->first();
     }
 
-    public function getChatMessages($chatId)
+    public function getChatMessages($chatId): void
     {
         $this->chatMessages = ChatMessage::where('chat_id',$chatId)->get();
     }
