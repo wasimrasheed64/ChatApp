@@ -41,7 +41,7 @@ new class extends Component {
                         data-target="#app-chat-contacts"></i>
                     <div class="flex-shrink-0 avatar avatar-online">
                         <img
-                            src="{{ $chatUser->user->avatar }}"
+                            src="{{ $user->avatar }}"
                             alt="Avatar"
                             class="rounded-circle"
                             data-bs-toggle="sidebar"
@@ -51,8 +51,8 @@ new class extends Component {
                     <div class="chat-contact-info flex-grow-1 ms-4">
                         <h6 class="m-0 fw-normal">
 
-                            {{ $chatUser->user->name }}</h6>
-                        <small class="user-status text-body">{{ $chatUser->user->bio }}</small>
+                            {{ $user->name }}</h6>
+                        <small class="user-status text-body">{{ $user->bio }}</small>
                     </div>
                 @endif
             </div>

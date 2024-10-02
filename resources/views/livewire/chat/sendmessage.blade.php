@@ -5,18 +5,20 @@ use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Reactive;
 use Livewire\Volt\Component;
-
+use Livewire\Attributes\On;
 new class extends Component {
-    #[Reactive]
-    public $chatId;
-    public string $newMessage = '';
+    public $chatId = null;
 
-
-    public function mount($chatId)
+    #[On('set-send-message')]
+    public function chatListUpdated($chatId): void
     {
+        \Illuminate\Support\Facades\Log::info('========Chat User=======');
+        \Illuminate\Support\Facades\Log::info($chatId);
+        \Illuminate\Support\Facades\Log::info('===============');
         $this->chatId = $chatId;
     }
 
+    public string $newMessage = '';
     public function addMessage(): void
     {
         $user = Auth::user();

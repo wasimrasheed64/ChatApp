@@ -6,7 +6,7 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 
 new class extends Component {
-    public $chatSelected;
+    public  $chatSelected ;
 
     #[On('contact-selected')]
     public function updateSelectedContact($selectedContact): void

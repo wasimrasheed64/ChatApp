@@ -25,6 +25,7 @@ new class extends Component {
     {
         $this->dispatch('chat-id-updated', $selectedChatInChatList);
         $this->dispatch('get-chat-messages',$selectedChatInChatList);
+        $this->dispatch('set-send-message',$selectedChatInChatList);
         $this->selectedChatInChatList = $selectedChatInChatList;
     }
 

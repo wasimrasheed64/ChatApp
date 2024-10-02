@@ -1,18 +1,22 @@
 <?php
 
 use App\Models\ChatMessage;
-use Livewire\Volt\Component;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
+use Livewire\Volt\Component;
 
 new class extends Component {
+
     public $chatMessages = [];
     public $chatSelected;
 
-    #[On('get-chat-messages')]
+    public function mount($chatSelected): void
+    {
+
+    }
+
+    #[On('updateChatMessages')]
     public function chatListUpdated($chatId): void
     {
-        $this->chatSelected = $chatId;
         $this->getChatMessages($chatId);
     }
 
@@ -23,7 +27,7 @@ new class extends Component {
             ->orderBy('created_at', 'desc')
             ->take(40)
             ->get()
-            ->sortBy('created_at');;
+            ->sortBy('created_at');
     }
 
     #[On('echo-private:messages.{chatSelected},MessageSent')]
@@ -33,7 +37,6 @@ new class extends Component {
     }
 }
 ?>
-
 <div>
     <div class="chat-history-body">
         <ul class="list-unstyled chat-history">

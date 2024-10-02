@@ -9,9 +9,26 @@ new class extends Component {
 
     public function mount()
     {
-        $authUserId = auth()->id(); // Get the currently authenticated user's ID
 
-        $this->contacts = User::where('id', '!=', $authUserId) // Exclude the authenticated user
+
+//        $this->contacts = User::where('id', '!=', $authUserId) // Exclude the authenticated user
+//        ->whereNotIn('id', function ($query) use ($authUserId) {
+//            $query->select('user_id') // Get user IDs from chat_users where the authenticated user is part of the chat
+//            ->from('chat_users')
+//                ->whereIn('chat_id', function ($subQuery) use ($authUserId) {
+//                    $subQuery->select('chat_id') // Select chat IDs where the authenticated user is included
+//                    ->from('chat_users')
+//                        ->where('user_id', $authUserId);
+//                });
+//        })
+//            ->get();
+        $this->loadContacts();
+
+    }
+
+    public function loadContacts(){
+        $authUserId = auth()->id(); // Get the currently authenticated user's ID
+        $this->contacts = User::where('id', 2) // Exclude the authenticated user
         ->whereNotIn('id', function ($query) use ($authUserId) {
             $query->select('user_id') // Get user IDs from chat_users where the authenticated user is part of the chat
             ->from('chat_users')
@@ -22,7 +39,6 @@ new class extends Component {
                 });
         })
             ->get();
-
     }
 
     public function contactSeleted($chatId)
@@ -32,19 +48,7 @@ new class extends Component {
 
     #[On('chat-list-updated')]
     public function contactListUpdated(){
-        $authUserId = auth()->id(); // Get the currently authenticated user's ID
-
-        $this->contacts = User::where('id', '!=', $authUserId) // Exclude the authenticated user
-        ->whereNotIn('id', function ($query) use ($authUserId) {
-            $query->select('user_id') // Get user IDs from chat_users where the authenticated user is part of the chat
-            ->from('chat_users')
-                ->whereIn('chat_id', function ($subQuery) use ($authUserId) {
-                    $subQuery->select('chat_id') // Select chat IDs where the authenticated user is included
-                    ->from('chat_users')
-                        ->where('user_id', $authUserId);
-                });
-        })
-            ->get();
+        $this->loadContacts();
     }
 };
 ?>
