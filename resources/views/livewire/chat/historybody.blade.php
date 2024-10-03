@@ -7,18 +7,14 @@ use Livewire\Volt\Component;
 new class extends Component {
 
     public $chatMessages = [];
-    public $chatSelected;
+    public $chatSelected ;
 
-    public function mount($chatSelected): void
+    public function mount(): void
     {
-
+        $this->chatSelected = \Illuminate\Support\Facades\Auth::user()->chats()->first()->id;
+        $this->getChatMessages($this->chatSelected);
     }
 
-    #[On('updateChatMessages')]
-    public function chatListUpdated($chatId): void
-    {
-        $this->getChatMessages($chatId);
-    }
 
     public function getChatMessages($chatId): void
     {

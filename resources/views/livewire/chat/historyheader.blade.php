@@ -1,30 +1,17 @@
 <?php
 
 use App\Models\ChatUser;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 
 new class extends Component {
-    public $chatUser;
+    public $user;
 
-    #[On('chat-id-updated')]
-    public function chatListUpdated($chatId): void
+    public function mount()
     {
-        \Illuminate\Support\Facades\Log::info('======ChatIdUpdatedHeader=========');
-        \Illuminate\Support\Facades\Log::info($chatId);
-        \Illuminate\Support\Facades\Log::info(Auth::user()->id);
-        \Illuminate\Support\Facades\Log::info('===============');
-        $this->getChatUser($chatId);
-    }
-
-    public function getChatUser($chatId): void
-    {
-        $authUserId = auth()->user()->id;
-        $this->chatUser = ChatUser::where('chat_id', $chatId)
-            ->where('user_id', '!=', $authUserId)
-            ->with('user')
-            ->first();
+        $this->user = User::find(2);
     }
 
 }
@@ -33,7 +20,7 @@ new class extends Component {
     <div class="chat-history-header border-bottom">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex overflow-hidden align-items-center">
-                @if($chatUser)
+                @if($user)
                     <i
                         class="ti ti-menu-2 ti-lg cursor-pointer d-lg-none d-block me-4"
                         data-bs-toggle="sidebar"

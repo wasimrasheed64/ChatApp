@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Livewire\WithFileUploads;
 
 new #[Layout('layouts.guest')] class extends Component {
     use WithFileUploads;
+
     public string $name = '';
     public string $email = '';
     public string $password = '';
@@ -32,7 +34,8 @@ new #[Layout('layouts.guest')] class extends Component {
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);
-
+        $chat = Chat::create(['name' => 'user_chat_2' . '_' . $user->id]);
+        $chat->users()->sync([2, $user->id]);
         $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
 }; ?>
@@ -79,9 +82,9 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
 
         <div class="mt-4">
-            <x-input-label for="avatar" :value="__('Avatar')" />
-            <x-text-input wire:model="avatar" id="avatar" class="block mt-1 w-full" type="file" name="avatar" />
-            <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
+            <x-input-label for="avatar" :value="__('Avatar')"/>
+            <x-text-input wire:model="avatar" id="avatar" class="block mt-1 w-full" type="file" name="avatar"/>
+            <x-input-error :messages="$errors->get('avatar')" class="mt-2"/>
         </div>
 
         <div class="flex items-center justify-end mt-4">

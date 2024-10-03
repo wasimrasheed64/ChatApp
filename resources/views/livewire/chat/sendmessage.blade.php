@@ -7,15 +7,11 @@ use Livewire\Attributes\Reactive;
 use Livewire\Volt\Component;
 use Livewire\Attributes\On;
 new class extends Component {
-    public $chatId = null;
+    public $chatId ;
 
-    #[On('set-send-message')]
-    public function chatListUpdated($chatId): void
+    public function mount(): void
     {
-        \Illuminate\Support\Facades\Log::info('========Chat User=======');
-        \Illuminate\Support\Facades\Log::info($chatId);
-        \Illuminate\Support\Facades\Log::info('===============');
-        $this->chatId = $chatId;
+        $this->chatId = \Illuminate\Support\Facades\Auth::user()->chats()->first()->id;
     }
 
     public string $newMessage = '';
