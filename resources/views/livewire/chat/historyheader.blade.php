@@ -1,10 +1,8 @@
 <?php
 
-use App\Models\ChatUser;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
-use Livewire\Attributes\On;
 
 new class extends Component {
     public $user;
@@ -13,6 +11,15 @@ new class extends Component {
     {
         $this->user = User::find(2);
     }
+
+    public function logout(Logout $logout): void
+    {
+        $logout();
+
+        $this->redirect('/', navigate: true);
+    }
+
+
 
 }
 ?>
@@ -44,12 +51,6 @@ new class extends Component {
                 @endif
             </div>
             <div class="d-flex align-items-center">
-                <i
-                    class="ti ti-phone ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>
-                <i
-                    class="ti ti-video ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>
-                <i
-                    class="ti ti-search ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>
                 <div class="dropdown">
                     <button
                         class="btn btn-sm btn-icon btn-text-secondary text-secondary rounded-pill dropdown-toggle hide-arrow"
@@ -59,7 +60,7 @@ new class extends Component {
                         <i class="ti ti-dots-vertical ti-md"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="chat-header-actions">
-                        <a class="dropdown-item" href="javascript:void(0);">Clear Chat</a>
+                        <a class="dropdown-item" wire:click="logout">Logout</a>
                     </div>
                 </div>
             </div>

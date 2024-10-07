@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->default(\Illuminate\Support\Str::uuid());
             $table->string('name');
+            $table->json('updated_history')->nullable();
             $table->timestamps();
         });
 

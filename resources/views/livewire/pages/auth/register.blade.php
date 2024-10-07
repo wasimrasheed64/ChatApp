@@ -17,12 +17,14 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public $avatar;
 
     /**
      * Handle an incoming registration request.
      */
     public function register(): void
     {
+        $link = 'img/default.png';
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
@@ -30,8 +32,12 @@ new #[Layout('layouts.guest')] class extends Component {
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        if(request()->has('avatar')){
+            $link =  $this->avatar->store(path: 'photos');
 
-        event(new Registered($user = User::create($validated)));
+        }
+
+        event(new Registered($user = User::create($validated+['avatar' => $link])));
 
         Auth::login($user);
         $chat = Chat::create(['name' => 'user_chat_2' . '_' . $user->id]);

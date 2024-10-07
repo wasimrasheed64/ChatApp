@@ -16,7 +16,7 @@ use function Livewire\Volt\{state};
                 data-target="#app-chat-sidebar-left">
                 <img
                     class="user-avatar rounded-circle cursor-pointer"
-                    src="{{auth()->user()->avatar  }}"
+                    src="{{asset(auth()->user()->avatar)  }}"
                     alt="Avatar" />
             </div>
             <div class="chat-contact-info flex-grow-1 ms-4">

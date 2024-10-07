@@ -16,9 +16,9 @@ new class extends Component {
     public function loadChats()
     {
         $authUser = auth()->user();
-        $this->chats = Chat::with(['users' => function ($q) use ($authUser) {
-                $q->where('users.id', '!=', $authUser->id);
-            }])->get();
+        $this->chats = Chat::whereHas('users',function($q) use ($authUser){
+            $q->where('users.id', $authUser->id);
+        })->with('users')->get();
     }
 
     public function chatSelected($selectedChatInChatList)

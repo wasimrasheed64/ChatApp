@@ -17,13 +17,14 @@ new class extends Component {
     public string $newMessage = '';
     public function addMessage(): void
     {
+        if(empty(trim($this->newMessage)))return;
         $user = Auth::user();
         ChatMessage::create([
             'user_id' => $user->id,
             'chat_id' => $this->chatId,
-            'message' => $this->newMessage
+            'message' => $this->newMessage,
         ]);
-        MessageSent::dispatch($user ,$this->newMessage,$this->chatId);
+        MessageSent::dispatch($user ,$this->newMessage,$this->chatId,'bot');
         $this->reset('newMessage');
     }
 

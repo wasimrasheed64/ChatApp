@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Chat;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,11 +27,7 @@ class DatabaseSeeder extends Seeder
             'bio' => 'Ai Bot',
             'avatar' =>'https://cleaningservicevegas.com/storage/images/profile/BHqf0c5xZQ6YrT9u94iBrLyQAnRbvLJsAMuBG06T.jpg'
         ]);
-
-        User::factory(10)->create([
-            'bio' => 'Full Stack Engineer',
-            'avatar' => 'https://cleaningservicevegas.com/storage/images/profile/BHqf0c5xZQ6YrT9u94iBrLyQAnRbvLJsAMuBG06T.jpg',
-        ]);
-
+        $chat = Chat::create(['name' => 'user_chat_2_1' ]);
+        $chat->users()->sync([2, 1]);
     }
 }

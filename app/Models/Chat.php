@@ -12,6 +12,7 @@ class Chat extends Model
     protected $fillable = [
         'uuid',
         'name',
+        'updated_history'
     ];
 
     public function chatUsers()
