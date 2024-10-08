@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\GetResponseFromBot;
+use App\Models\Chat;
 use App\Models\ChatMessage;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
@@ -29,18 +30,28 @@ new class extends Component {
         $this->dispatch('chatUpdated');
     }
 
+    #[On('chat-list-clear')]
+    public function clearChat()
+    {
+        $chat = Chat::find($this->chatSelected);
+        $chat->updated_history = null;
+        $chat->save();
+        ChatMessage::where('chat_id',$this->chatSelected)
+                    ->delete();
+    }
+
 
     #[On('sent-message-to-bot')]
-    public function sendMessage($chatId,$message)
+    public function sendMessage($chatId, $message)
     {
-        GetResponseFromBot::dispatch($chatId,$message);
+        GetResponseFromBot::dispatch($chatId, $message);
     }
 
     #[On('echo-private:messages.{chatSelected},MessageSent')]
     public function onMessageSent($event): void
     {
         $this->getChatMessages($event['chatId']);
-        if($event['type'] == 'bot') {
+        if ($event['type'] == 'bot') {
             $this->sendMessage($event['chatId'], $event['text']);
         }
     }
@@ -52,7 +63,8 @@ new class extends Component {
             @if($chatMessages)
                 @foreach($chatMessages as $chatMessage)
                     <li class="chat-message {{ $chatMessage->user->id === auth()->user()->id ? 'chat-message-right' : '' }}">
-                        <div class="user-avatar flex-shrink-0 ms-4 {{ $chatMessage->user->id === auth()->user()->id ? 'd-none' : '' }}">
+                        <div
+                            class="user-avatar flex-shrink-0 ms-4 {{ $chatMessage->user->id === auth()->user()->id ? 'd-none' : '' }}">
                             <div class="avatar avatar-sm">
                                 <img src="{{ $chatMessage->user->avatar }}" alt="Avatar" class="rounded-circle"/>
                             </div>
@@ -68,7 +80,8 @@ new class extends Component {
                                     <small>{{ $chatMessage->created_at }}</small>
                                 </div>
                             </div>
-                            <div class="user-avatar flex-shrink-0 ms-4 {{ $chatMessage->user->id === auth()->user()->id ?  '' :'d-none' }}">
+                            <div
+                                class="user-avatar flex-shrink-0 ms-4 {{ $chatMessage->user->id === auth()->user()->id ?  '' :'d-none' }}">
                                 <div class="avatar avatar-sm">
                                     <img src="{{ $chatMessage->user->avatar }}" alt="Avatar" class="rounded-circle"/>
                                 </div>
@@ -89,7 +102,7 @@ new class extends Component {
         Livewire.on('chatUpdated', () => {
             let mContainer = document.getElementById("historyBody");
             console.log('working');
-            setTimeout(function() {
+            setTimeout(function () {
                 scrollToBottom();
             }, 2000);
         });
@@ -98,6 +111,7 @@ new class extends Component {
     function scrollToBottom() {
         chatHistoryBody.scrollTo(0, chatHistoryBody.scrollHeight);
     }
+
     scrollToBottom();
 </script>
 
