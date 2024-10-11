@@ -50,10 +50,12 @@ new class extends Component {
     #[On('echo-private:messages.{chatSelected},MessageSent')]
     public function onMessageSent($event): void
     {
-        $this->getChatMessages($event['chatId']);
         if ($event['type'] == 'bot') {
             $this->sendMessage($event['chatId'], $event['text']);
+        }else{
+            $this->dispatch('stop-typing');
         }
+        $this->getChatMessages($event['chatId']);
     }
 }
 ?>

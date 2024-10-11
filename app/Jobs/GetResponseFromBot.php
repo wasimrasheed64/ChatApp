@@ -45,6 +45,14 @@ class GetResponseFromBot implements ShouldQueue
 
         // Fetch chat messages and format them for the bot request
        $chatHistory = Chat::find($this->chatId);
+//        ChatMessage::create([
+//            'user_id' => $user->id,
+//            'chat_id' => $this->chatId,
+//            'message' => 'response from bot',
+//        ]);
+//
+//        MessageSent::dispatch($user, 'response from bot', $this->chatId, 'human');
+////
 
         // Prepare the request data
         $data = [
