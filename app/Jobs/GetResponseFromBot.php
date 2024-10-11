@@ -15,6 +15,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class GetResponseFromBot implements ShouldQueue
 {
@@ -38,7 +39,9 @@ class GetResponseFromBot implements ShouldQueue
      */
     public function handle(): void
     {
-
+        Log::info('==================');
+        Log::info($this->botURL);
+        Log::info('==================');
         $user = User::find(2);
 
         // Fetch chat messages and format them for the bot request
