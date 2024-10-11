@@ -37,7 +37,7 @@ class GetResponseFromBot implements ShouldQueue
      */
     public function handle(): void
     {
-        $botURL = 'https://0122-194-68-245-144.ngrok-free.app/get_response';
+        $botURL = Bot::find(1)->url;
         Log::info('==================');
         Log::info($botURL);
         Log::info('==================');
