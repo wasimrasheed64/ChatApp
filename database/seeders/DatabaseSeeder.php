@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         Bot::create([
             'name' => 'GML4',
-            'url' => 'https://gml4.com/',
+            'url' => 'https://0122-194-68-245-144.ngrok-free.app/get_response',
         ]);
     }
 }
