@@ -7,13 +7,13 @@ Route::get('/',function(){
     return redirect('/login');
 });
 
-Route::post('change-bot-url',function(\Illuminate\Http\Request $request){
+Route::post('p',function(\Illuminate\Http\Request $request){
     $request->validate(['url'=>'required']);
     \App\Models\Bot::find(1)->update([
        'url' => $request->get('url'),
     ]);
     return response()->json(['url'=> $request->get('url'), 'message' => 'success']);
-})->withoutMiddleware(['verifyCsrf']);
+})->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::view('dashboard', 'dashboard')
     ->name('dashboard');
