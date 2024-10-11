@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bot;
 use App\Models\Chat;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -29,5 +30,10 @@ class DatabaseSeeder extends Seeder
         ]);
         $chat = Chat::create(['name' => 'user_chat_2_1' ]);
         $chat->users()->sync([2, 1]);
+
+        Bot::create([
+            'name' => 'GML4',
+            'url' => 'https://gml4.com/',
+        ]);
     }
 }
