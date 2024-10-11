@@ -22,7 +22,6 @@ class GetResponseFromBot implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected  $newMessage;
     protected $chatId = null;
-    protected $botURL;
 
     /**
      * Create a new job instance.
@@ -31,7 +30,6 @@ class GetResponseFromBot implements ShouldQueue
     {
         $this->chatId = $chatId;
         $this->newMessage = $newMessage;
-        $this->botURL = Bot::find(1)->url;
     }
 
     /**
@@ -39,8 +37,9 @@ class GetResponseFromBot implements ShouldQueue
      */
     public function handle(): void
     {
+        $botURL = Bot::find(1)->url;
         Log::info('==================');
-        Log::info($this->botURL);
+        Log::info($botURL);
         Log::info('==================');
         $user = User::find(2);
 
@@ -69,7 +68,7 @@ class GetResponseFromBot implements ShouldQueue
 
         try {
             // Send the POST request to the chatbot API
-            $response = $client->post($this->botURL, $requestBody);
+            $response = $client->post($botURL, $requestBody);
 
             // Handle the response from the bot
             $responseData = json_decode($response->getBody()->getContents(), true);
