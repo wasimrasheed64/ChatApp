@@ -48,7 +48,7 @@ new class extends Component {
                 class="form-control message-input border-0 me-4 shadow-none"
                 placeholder="Type your message here..."/>
             <div class="message-actions d-flex align-items-center">
-                <button class="btn btn-primary d-flex send-msg-btn {{ $typing ? 'disabled' : '' }}"
+                <button class="btn btn-primary d-flex send-msg-btn"
                 >
                     <span class="align-middle d-md-inline-block d-none">Send</span>
                     <i class="ti ti-send ti-16px ms-md-2 ms-0"></i>
