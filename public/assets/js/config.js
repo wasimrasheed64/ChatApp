@@ -88,13 +88,14 @@ TemplateCustomizer.LANGUAGES.fr = { ... };
  */
 
 if (typeof TemplateCustomizer !== 'undefined') {
+    console.log('template config')
   window.templateCustomizer = new TemplateCustomizer({
     cssPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     themesPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     displayCustomizer: false,
     lang: localStorage.getItem('templateCustomizer-' + templateName + '--Lang') || 'en', // Set default language here
     defaultTheme: 1,
-    defaultStyle: 'system',
+    defaultStyle: 'dark',
     // defaultTextDir: 'rtl',
     defaultContentLayout: 'wide',
     defaultHeaderType: 'static',

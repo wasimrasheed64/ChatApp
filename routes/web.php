@@ -16,7 +16,8 @@ Route::post('change-bot-url',function(\Illuminate\Http\Request $request){
 })->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::view('dashboard', 'dashboard')
-    ->name('dashboard');
+    ->name('dashboard')
+    ->middleware(['auth']);
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])

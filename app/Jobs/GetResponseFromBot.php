@@ -80,7 +80,9 @@ class GetResponseFromBot implements ShouldQueue
 
             // Handle the response from the bot
             $responseData = json_decode($response->getBody()->getContents(), true);
+            Log::info('=====Bot Response=============');
             logger('Bot response:', $responseData);
+            Log::info('==================');
             if(isset($responseData['updated_history'])) {
                 logger('Updated History:', $responseData['updated_history']);
                 $chatHistory->updated_history = $responseData['updated_history'];
