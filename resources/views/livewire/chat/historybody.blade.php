@@ -79,7 +79,7 @@ new class extends Component {
                                     </p>
                                 </div>
                                 <div class="text-end text-muted mt-1">
-                                    <small>{{ $chatMessage->created_at }}</small>
+                                    <small>{{ \Illuminate\Support\Carbon::parse($chatMessage->created_at)->diffForHumans() }}</small>
                                 </div>
                             </div>
                             <div
