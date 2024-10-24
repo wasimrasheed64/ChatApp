@@ -22,6 +22,10 @@ new class extends Component {
         $this->redirect('/', navigate: true);
     }
 
+    public function downloadFile(){
+        $this->dispatch('download-file');
+    }
+
     public function clearChat(){
         $this->dispatch('chat-list-clear');
     }
@@ -59,8 +63,8 @@ new class extends Component {
             <div class="d-flex align-items-center">
                 {{--                <i--}}
                 {{--                    class="ti ti-phone ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>--}}
-                {{--                <i--}}
-                {{--                    class="ti ti-video ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>--}}
+                                <i wire:click="downloadFile"
+                                    class="ti ti-video ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>
                                 <i  wire:click="logout"
                                     class="ti ti-logout ti-md cursor-pointer d-sm-inline-flex d-none me-1 btn btn-sm btn-text-secondary text-secondary btn-icon rounded-pill"></i>
                 <div class="dropdown">
