@@ -14,8 +14,8 @@ new class extends Component
 
     public function addMessage(): void
     {
-        MessageSent::dispatch(auth()->user()->name, $this->message);
-        $this->reset('message');
+//        MessageSent::dispatch('user', $this->message);
+//        $this->reset('message');
     }
 
     #[On('echo:messages,MessageSent')]
