@@ -1,8 +1,10 @@
 <?php
 
+use App\Exports\ChatExport;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/',function(){
     return redirect('/login');
@@ -23,16 +25,7 @@ Route::view('dashboard', 'dashboard')
 Route::get('chat/{id}', function($id){
     $data = \App\Models\ChatMessage::with('user')
         ->where('chat_id',$id)->get();
-    $messages = [];
-    foreach ($data as $message){
-        $messages[] = [
-             $message->user->id == 2 ? 'Bot' : $message->user->name  => $message->message,
-        ];
-    }
-    $fileName = time() . 'chat.txt';
-    $fileStorePath = public_path($fileName);
-    File::put($fileStorePath, json_encode($messages));
-    return response()->download($fileStorePath);
+    return Excel::download(new ChatExport($data),   'ChatExport.xlsx');
 })->middleware(['auth'])->name('chat.download');
 
 Route::view('profile', 'profile')
