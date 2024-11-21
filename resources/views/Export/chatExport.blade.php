@@ -36,20 +36,12 @@
                 Message
             </th>
         </tr>
-        <tr>
-            <th style="font-weight: bolder;border:2px solid #000;">Project Managers</th>
-            @foreach($projectManagerObject as $projectManager)
-                <th style="text-align: center; font-weight: bolder;color: #cc0000;border:2px solid #000;">
-                    {{$projectManager['projectManagerName']}}
-                </th>
-            @endforeach
-        </tr>
         </thead>
         <tbody>
         @foreach($chatObject as $chat)
           <tr>
               <td>
-                  {{$chat->user->id == 2 ? 'Bot' : $message->user->name}}
+                  {{$chat->user->id == 2 ? 'Bot' : $chat->user->name}}
               </td>
               <td>
                   {!! $chat->message !!}

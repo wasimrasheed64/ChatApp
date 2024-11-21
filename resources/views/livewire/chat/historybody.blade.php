@@ -41,7 +41,7 @@ new class extends Component {
     }
 
     #[On('download-file')]
-    public function downloadFile(): \Illuminate\Http\RedirectResponse
+    public function downloadFile()
     {
         return redirect()->route('chat.download', [$this->chatSelected]);
     }
