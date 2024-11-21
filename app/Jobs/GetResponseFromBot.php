@@ -38,21 +38,10 @@ class GetResponseFromBot implements ShouldQueue
     public function handle(): void
     {
         $botURL = Bot::find(1)->url;
-        Log::info('==================');
-        Log::info($botURL);
-        Log::info('==================');
         $user = User::find(2);
 
         // Fetch chat messages and format them for the bot request
-       $chatHistory = Chat::find($this->chatId);
-//        ChatMessage::create([
-//            'user_id' => $user->id,
-//            'chat_id' => $this->chatId,
-//            'message' => 'response from bot',
-//        ]);
-//
-//        MessageSent::dispatch($user, 'response from bot', $this->chatId, 'human');
-////
+        $chatHistory = Chat::find($this->chatId);
 
         // Prepare the request data
         $data = [
@@ -88,10 +77,13 @@ class GetResponseFromBot implements ShouldQueue
                 $chatHistory->updated_history = $responseData['updated_history'];
                 $chatHistory->save();
                 $responseMessage = $responseData['response'];
+                $message = $this->fixHashes($responseMessage);
+
+                $processedMessage = $this->processMessage($message);
                 ChatMessage::create([
                     'user_id' => $user->id,
                     'chat_id' => $this->chatId,
-                    'message' => $responseMessage,
+                    'message' => $processedMessage,
                 ]);
 
                 MessageSent::dispatch($user, $responseMessage, $this->chatId, 'human');
@@ -100,8 +92,31 @@ class GetResponseFromBot implements ShouldQueue
 
             // You can process $responseData further as needed
         } catch (GuzzleException $e) {
-            logger('Guzzle exception:', $e->getMessage());
+            logger('Guzzle exception:', (array)$e->getMessage());
         }
     }
 
+        public function fixHashes($message): string
+        {
+            // Case 2: Starting hash missing, end hash exists
+            return preg_replace_callback(
+                '/(https?:\/\/[^\s]+)\s([^#.,]+)#/',
+                function ($matches) {
+                    return $matches[1] . " #" . $matches[2] . "#";
+                },
+                $message
+            );
+        }
+
+
+    public function processMessage($message): string
+    {
+        $urlWithLabelRegex = '/(https?:\/\/[^\s]+)\s#([^#]+)#/';
+
+        return preg_replace_callback($urlWithLabelRegex, function ($matches) {
+            $url = $matches[1];
+            $label = $matches[2];
+            return '<a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" rel="noopener noreferrer">' . htmlspecialchars($label, ENT_QUOTES) . '</a>';
+        }, $message);
+    }
 }
