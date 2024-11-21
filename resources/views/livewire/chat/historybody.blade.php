@@ -41,7 +41,7 @@ new class extends Component {
     }
 
     #[On('download-file')]
-    public function downloadFile()
+    public function downloadFile(): \Illuminate\Http\RedirectResponse
     {
         return redirect()->route('chat.download', [$this->chatSelected]);
     }
@@ -80,7 +80,7 @@ new class extends Component {
                             <div class="chat-message-wrapper flex-grow-1">
                                 <div class="chat-message-text">
                                     <p class="mb-0">
-                                        {{ $chatMessage->message }}
+                                        {!! $chatMessage->message  !!}
                                     </p>
                                 </div>
                                 <div class="text-end text-muted mt-1">
